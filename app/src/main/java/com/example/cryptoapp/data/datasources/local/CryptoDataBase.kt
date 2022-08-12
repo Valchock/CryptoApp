@@ -11,7 +11,8 @@ import com.example.cryptoapp.data.datasources.local.entities.ExchangeInfoEntity
     entities = [
         ExchangeInfoEntity::class
     ],
-    version = 1
+    version = 1,
+    exportSchema = false
 )
 
 abstract class CryptoDataBase : RoomDatabase() {
