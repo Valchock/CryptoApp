@@ -98,29 +98,20 @@ class MainActivity : AppCompatActivity() {
     fun TabsContent(pagerState: PagerState) {
         HorizontalPager(state = pagerState) { page ->
             when (page) {
-                0 -> ExchangeInfoComposable(viewModel.inrExchangeInfo.value)
-                1 -> ExchangeInfoComposable(viewModel.usdtExchangeInfo.value)
-                2 -> ExchangeInfoComposable(viewModel.wrxExchangeInfo.value)
-                3 -> ExchangeInfoComposable(viewModel.btcExchangeInfo.value)
+                0 -> ExchangeInfoComposable(viewModel.inrExchangeInfo.value, viewModel)
+                1 -> ExchangeInfoComposable(
+                    viewModel.usdtExchangeInfo.value,
+                    viewModel
+                )
+                2 -> ExchangeInfoComposable(
+                    viewModel.wrxExchangeInfo.value,
+                    viewModel
+                )
+                3 -> ExchangeInfoComposable(
+                    viewModel.btcExchangeInfo.value,
+                    viewModel
+                )
             }
-        }
-    }
-
-
-    @Composable
-    fun TabContentScreen(data: String) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = data,
-                style = MaterialTheme.typography.h5,
-                color = DarkGray,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
-            )
         }
     }
 }

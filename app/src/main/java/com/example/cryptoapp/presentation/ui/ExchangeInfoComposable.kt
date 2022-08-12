@@ -12,38 +12,53 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.cryptoapp.presentation.model.ExchangeInfo
+import com.example.cryptoapp.presentation.viewModel.CryptoExchangeViewModel
 import com.example.cryptoapp.utils.*
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
 @Composable
-fun ExchangeInfoComposable(exchangeInfoList: List<ExchangeInfo>) {
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
-        item{
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(color = BlueGray)
-                    .padding(horizontal = 16.dp, vertical = 12.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = "Base Asset/ Symbol",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Normal,
-                    color = Blue
-                )
+fun ExchangeInfoComposable(
+    exchangeInfoList: List<ExchangeInfo>,
+    viewModel: CryptoExchangeViewModel
+) {
+    val swipeRefreshState = rememberSwipeRefreshState(
+        isRefreshing = viewModel.isRefreshing.value
+    )
+    Column(modifier = Modifier.fillMaxSize()) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(color = BlueGray)
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = "Base Asset/ Symbol",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Normal,
+                color = Blue
+            )
 
-                Text(
-                    text = "LastPrice",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Normal,
-                    color = Blue
-                )
+            Text(
+                text = "LastPrice",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Normal,
+                color = Blue
+            )
 
+        }
+        SwipeRefresh(state = swipeRefreshState, onRefresh = {
+            viewModel.isRefreshing.value = true
+            viewModel.syncExchangeInfo()
+        }) {
+            LazyColumn() {
+                items(exchangeInfoList) { exchangeInfoItem ->
+                    ExchangeInfoItem(exchangeInfoItem)
+                }
             }
         }
-        items(exchangeInfoList) { exchangeInfoItem ->
-            ExchangeInfoItem(exchangeInfoItem)
-        }
+
     }
 
 }

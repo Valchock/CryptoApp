@@ -35,9 +35,12 @@ class CryptoExchangeViewModel(application: Application) : AndroidViewModel(appli
         mutableStateOf(listOf())
     val btcExchangeInfo: State<List<ExchangeInfo>> = _btcExchangeInfo
 
+    val isRefreshing = mutableStateOf(false)
+
     fun syncExchangeInfo() {
         viewModelScope.launch {
             exchangeInfoUseCase()
+            isRefreshing.value = false
         }
     }
 

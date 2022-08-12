@@ -93,6 +93,8 @@ dependencies {
     implementation "androidx.compose.material:material-icons-core:$compose_version"
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
 
+    implementation "com.google.accompanist:accompanist-swiperefresh:0.24.2-alpha"
+
     implementation "com.google.accompanist:accompanist-pager:0.13.0"
     implementation "com.google.accompanist:accompanist-pager-indicators:0.13.0"
 }
