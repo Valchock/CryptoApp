@@ -19,9 +19,21 @@ class CryptoExchangeViewModel(application: Application) : AndroidViewModel(appli
     private val exchangeInfoUseCase = ExchangeInfoUseCase(repository)
     private val getExchangeInfoByCurrency = GetExchangeInfoByCurrency(repository)
 
-    private val _exchangeInfo: MutableState<List<ExchangeInfo>> =
+    private val _inrExchangeInfo: MutableState<List<ExchangeInfo>> =
         mutableStateOf(listOf())
-    val exchangeInfo: State<List<ExchangeInfo>> = _exchangeInfo
+    val inrExchangeInfo: State<List<ExchangeInfo>> = _inrExchangeInfo
+
+    private val _usdtExchangeInfo: MutableState<List<ExchangeInfo>> =
+        mutableStateOf(listOf())
+    val usdtExchangeInfo: State<List<ExchangeInfo>> = _usdtExchangeInfo
+
+    private val _wrxExchangeInfo: MutableState<List<ExchangeInfo>> =
+        mutableStateOf(listOf())
+    val wrxExchangeInfo: State<List<ExchangeInfo>> = _wrxExchangeInfo
+
+    private val _btcExchangeInfo: MutableState<List<ExchangeInfo>> =
+        mutableStateOf(listOf())
+    val btcExchangeInfo: State<List<ExchangeInfo>> = _btcExchangeInfo
 
     fun syncExchangeInfo() {
         viewModelScope.launch {
@@ -32,7 +44,7 @@ class CryptoExchangeViewModel(application: Application) : AndroidViewModel(appli
     fun getINRExchangeInfo() {
         viewModelScope.launch {
             getExchangeInfoByCurrency("inr").collect { inrExchangeInfoList ->
-                _exchangeInfo.value = inrExchangeInfoList
+                _inrExchangeInfo.value = inrExchangeInfoList
             }
         }
     }
@@ -40,7 +52,7 @@ class CryptoExchangeViewModel(application: Application) : AndroidViewModel(appli
     fun getUSDTExchangeInfo() {
         viewModelScope.launch {
             getExchangeInfoByCurrency("usdt").collect { usdtExchangeInfoList ->
-                _exchangeInfo.value = usdtExchangeInfoList
+                _usdtExchangeInfo.value = usdtExchangeInfoList
             }
         }
     }
@@ -48,7 +60,7 @@ class CryptoExchangeViewModel(application: Application) : AndroidViewModel(appli
     fun getWRXExchangeInfo() {
         viewModelScope.launch {
             getExchangeInfoByCurrency("wrx").collect { wrxExchangeInfoList ->
-                _exchangeInfo.value = wrxExchangeInfoList
+                _wrxExchangeInfo.value = wrxExchangeInfoList
             }
         }
     }
@@ -56,7 +68,7 @@ class CryptoExchangeViewModel(application: Application) : AndroidViewModel(appli
     fun getBTCExchangeInfo() {
         viewModelScope.launch {
             getExchangeInfoByCurrency("btc").collect { btcExchangeInfoList ->
-                _exchangeInfo.value = btcExchangeInfoList
+                _btcExchangeInfo.value = btcExchangeInfoList
             }
         }
     }

@@ -5,9 +5,5 @@ data class ExchangeInfo(
 
     val baseAsset: String,
 
-    val quoteAsset: String,
-
-    val volume: String,
-
-    val bidPrice: String
+    val lastPrice: String
 )

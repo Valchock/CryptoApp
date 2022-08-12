@@ -9,9 +9,7 @@ fun List<ExchangeInfoEntity>.toDomainEntity(): List<ExchangeInfo> {
         ExchangeInfo(
             symbol = it.symbol,
             baseAsset = it.baseAsset,
-            quoteAsset = it.quoteAsset,
-            volume = it.volume,
-            bidPrice = it.bidPrice
+            lastPrice = it.lastPrice
         )
 
     }
