@@ -8,8 +8,12 @@ import androidx.lifecycle.AndroidViewModel
 import com.example.cryptoapp.data.CryptoRepository
 import com.example.cryptoapp.domain.usecases.ExchangeInfoUseCase
 import androidx.lifecycle.viewModelScope
+import com.example.cryptoapp.domain.Result
+import com.example.cryptoapp.domain.Status
 import com.example.cryptoapp.domain.usecases.GetExchangeInfoByCurrency
+import com.example.cryptoapp.domain.usecases.SymbolInfoUseCase
 import com.example.cryptoapp.presentation.model.ExchangeInfo
+import com.example.cryptoapp.presentation.model.SymbolState
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -18,6 +22,7 @@ class CryptoExchangeViewModel(application: Application) : AndroidViewModel(appli
     private val repository = CryptoRepository(application)
     private val exchangeInfoUseCase = ExchangeInfoUseCase(repository)
     private val getExchangeInfoByCurrency = GetExchangeInfoByCurrency(repository)
+    private val getSymbolInfo = SymbolInfoUseCase(repository)
 
     private val _inrExchangeInfo: MutableState<List<ExchangeInfo>> =
         mutableStateOf(listOf())
@@ -34,6 +39,10 @@ class CryptoExchangeViewModel(application: Application) : AndroidViewModel(appli
     private val _btcExchangeInfo: MutableState<List<ExchangeInfo>> =
         mutableStateOf(listOf())
     val btcExchangeInfo: State<List<ExchangeInfo>> = _btcExchangeInfo
+
+    private val _symbolInfo: MutableState<SymbolState> =
+        mutableStateOf(SymbolState())
+    val symbolInfo: State<SymbolState> = _symbolInfo
 
     val isRefreshing = mutableStateOf(false)
 
@@ -72,6 +81,24 @@ class CryptoExchangeViewModel(application: Application) : AndroidViewModel(appli
         viewModelScope.launch {
             getExchangeInfoByCurrency("btc").collect { btcExchangeInfoList ->
                 _btcExchangeInfo.value = btcExchangeInfoList
+            }
+        }
+    }
+
+    fun getSymbolDetails(symbol: String) {
+        viewModelScope.launch {
+            getSymbolInfo(symbol).collect {
+                when (it.status) {
+                    Status.SUCCESS -> {
+                        _symbolInfo.value = SymbolState(symbolInfo = it.data)
+                    }
+                    Status.ERROR -> {
+                        _symbolInfo.value = SymbolState(error = it.message!!)
+                    }
+                    Status.LOADING -> {
+                        _symbolInfo.value = SymbolState(isLoading = true)
+                    }
+                }
             }
         }
     }

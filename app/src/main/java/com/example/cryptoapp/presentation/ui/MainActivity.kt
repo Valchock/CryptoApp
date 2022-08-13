@@ -1,19 +1,17 @@
 package com.example.cryptoapp.presentation.ui
 
+import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Arrangement
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import com.example.cryptoapp.presentation.viewModel.CryptoExchangeViewModel
@@ -29,15 +27,53 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val symbol = intent.getStringExtra(
+            SYMBOL
+        )
+        val startDestination = intent.getIntExtra(START_DESTINATION, 0).let {
+            if (it == 0) {
+                DESTINATION_EXCHANGE_INFO
+            } else {
+                it
+            }
+        }
         viewModel = ViewModelProvider(this)[CryptoExchangeViewModel::class.java]
-        viewModel.syncExchangeInfo()
-        viewModel.getINRExchangeInfo()
-        viewModel.getBTCExchangeInfo()
-        viewModel.getUSDTExchangeInfo()
-        viewModel.getWRXExchangeInfo()
         setContent {
-            TabLayout()
+            CryptoHome(startDestination, symbol)
+        }
+    }
 
+    companion object {
+        private const val START_DESTINATION = "start_destination"
+        const val SYMBOL = "symbol"
+        const val DESTINATION_EXCHANGE_INFO = 0
+        const val DESTINATION_EXCHANGE_INFO_DETAILS = 1
+
+        fun openExchangeInfoDetails(context: Context, symbol: String) {
+            val intent = Intent(context, MainActivity::class.java)
+            intent.putExtra(START_DESTINATION, DESTINATION_EXCHANGE_INFO_DETAILS)
+            intent.putExtra(SYMBOL, symbol)
+            context.startActivity(intent)
+        }
+    }
+
+    @Composable
+    fun CryptoHome(startDestination: Int, symbol: String?) {
+        when (startDestination) {
+            DESTINATION_EXCHANGE_INFO -> {
+                viewModel.syncExchangeInfo()
+                viewModel.getINRExchangeInfo()
+                viewModel.getBTCExchangeInfo()
+                viewModel.getUSDTExchangeInfo()
+                viewModel.getWRXExchangeInfo()
+                TabLayout()
+            }
+            DESTINATION_EXCHANGE_INFO_DETAILS -> {
+                symbol?.let {
+                    viewModel.getSymbolDetails(symbol)
+                    ExchangeInfoDetailsComposable(symbol, viewModel)
+                }
+            }
         }
     }
 
@@ -96,20 +132,33 @@ class MainActivity : AppCompatActivity() {
     @ExperimentalPagerApi
     @Composable
     fun TabsContent(pagerState: PagerState) {
+        val context = LocalContext.current
         HorizontalPager(state = pagerState) { page ->
             when (page) {
-                0 -> ExchangeInfoComposable(viewModel.inrExchangeInfo.value, viewModel)
+                0 -> ExchangeInfoComposable(viewModel.inrExchangeInfo.value, viewModel,
+                    onItemClick = { symbol ->
+                        openExchangeInfoDetails(context, symbol)
+                    })
                 1 -> ExchangeInfoComposable(
                     viewModel.usdtExchangeInfo.value,
-                    viewModel
+                    viewModel,
+                    onItemClick = { symbol ->
+                        openExchangeInfoDetails(context, symbol)
+                    }
                 )
                 2 -> ExchangeInfoComposable(
                     viewModel.wrxExchangeInfo.value,
-                    viewModel
+                    viewModel,
+                    onItemClick = { symbol ->
+                        openExchangeInfoDetails(context, symbol)
+                    }
                 )
                 3 -> ExchangeInfoComposable(
                     viewModel.btcExchangeInfo.value,
-                    viewModel
+                    viewModel,
+                    onItemClick = { symbol ->
+                        openExchangeInfoDetails(context, symbol)
+                    }
                 )
             }
         }

@@ -1,6 +1,7 @@
 package com.example.cryptoapp.data.datasources.remote
 
 import com.example.cryptoapp.data.datasources.remote.response.ExchangeInfoResponse
+import com.example.cryptoapp.data.datasources.remote.response.ExchangeSymbolView
 import com.example.cryptoapp.utils.RetrofitBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -12,6 +13,12 @@ class CryptoRemoteDataSource {
     suspend fun getExchangeInfo(): Result<ExchangeInfoResponse> {
         return apiCallResponse {
             RetrofitBuilder.cryptoService.getExchangeInfo()
+        }
+    }
+
+    suspend fun getSymbolInfo(symbol: String): Result<ExchangeSymbolView> {
+        return apiCallResponse {
+            RetrofitBuilder.cryptoService.getSymbolInfo(symbol)
         }
     }
 }

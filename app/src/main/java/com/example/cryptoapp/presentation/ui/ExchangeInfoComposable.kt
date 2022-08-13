@@ -1,6 +1,7 @@
 package com.example.cryptoapp.presentation.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -20,7 +21,8 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 @Composable
 fun ExchangeInfoComposable(
     exchangeInfoList: List<ExchangeInfo>,
-    viewModel: CryptoExchangeViewModel
+    viewModel: CryptoExchangeViewModel,
+    onItemClick: (String) -> Unit
 ) {
     val swipeRefreshState = rememberSwipeRefreshState(
         isRefreshing = viewModel.isRefreshing.value
@@ -54,7 +56,7 @@ fun ExchangeInfoComposable(
         }) {
             LazyColumn() {
                 items(exchangeInfoList) { exchangeInfoItem ->
-                    ExchangeInfoItem(exchangeInfoItem)
+                    ExchangeInfoItem(exchangeInfoItem, onItemClick)
                 }
             }
         }
@@ -64,11 +66,12 @@ fun ExchangeInfoComposable(
 }
 
 @Composable
-fun ExchangeInfoItem(exchangeInfoItem: ExchangeInfo) {
+fun ExchangeInfoItem(exchangeInfoItem: ExchangeInfo, onItemClick: (String) -> Unit) {
 
     Column(
         modifier = Modifier
             .padding(horizontal = 16.dp, vertical = 8.dp)
+            .clickable { onItemClick(exchangeInfoItem.symbol) }
     ) {
 
         Row(
