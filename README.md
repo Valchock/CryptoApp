@@ -20,7 +20,7 @@ An Android App that lists all the crypto currencies with their prices in list vi
 
 Based on MVVM with Clean Architecture.
 
-<img src="screenshots/mvvmCleanArchitecture.png" width = "200">
+<img src="screenshots/mvvmCleanArchitecture.png" width = "600">
 
 <b>The app includes the following main components:<b>
 <ul>
